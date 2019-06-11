@@ -23,7 +23,7 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(targetEntity = Role.class)
+    @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(name = "users_authorities",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))

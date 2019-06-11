@@ -52,7 +52,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     public AuthToken findById(String id) {
-        return this.repository.getOne(id);
+        return this.repository.findById(id).orElse(null);
     }
 
     @Override

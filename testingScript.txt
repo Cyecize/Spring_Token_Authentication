@@ -1,0 +1,30 @@
+let token = prompt('Enter token');
+let url = prompt('Enter url');
+
+$.ajax({
+    type: 'GET',
+    url: 'http://localhost:8000' + url,
+    headers: {
+        authToken: token,
+    },
+    success: function (data) {
+        console.log(data);
+    },
+    error: console.warn
+});
+
+
+//To autenticate
+let token;
+
+$.ajax({
+    type: 'POST',
+    url: 'http://localhost:8000/authorize',
+    headers: {
+		Authorization: 'Basic ' + btoa(prompt('Username') + ':' + prompt('Password'))
+	}
+    success: function (data) {
+        token = data.authToken;
+    },
+    error: console.warn
+});

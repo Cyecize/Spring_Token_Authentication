@@ -7,11 +7,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,14 @@ public class SecurityController {
                 .flatMap(chain -> chain.getFilters().stream())
                 .forEach(filter -> System.out.println(filter.getClass() + " "));
         System.out.println("!FILTERS");
+    }
+
+    @PostMapping("/authorize")
+    @PreAuthorize("isFullyAuthenticated()")
+    public Map<String, Object> authorizeAction(HttpSession session) {
+        return new HashMap<>() {{
+            put(AppConstants.AUTH_TOKEN_NAME, session.getAttribute(AppConstants.AUTH_TOKEN_NAME));
+        }};
     }
 
     @GetMapping("/anon")

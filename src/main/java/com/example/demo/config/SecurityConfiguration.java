@@ -1,6 +1,9 @@
 package com.example.demo.config;
 
+import com.example.demo.security.filters.TokenAuthenticationFilter;
+import com.example.demo.security.filters.TokenBasicAuthenticationFilter;
 import com.example.demo.security.models.BasicAuthenticationEntryPoint;
+import com.example.demo.security.services.AuthTokenService;
 import com.example.demo.users.services.UserService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -22,10 +26,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final Gson gson;
 
+    private final AuthTokenService authTokenService;
+
     @Autowired
-    public SecurityConfiguration(UserService userService, Gson gson) {
+    public SecurityConfiguration(UserService userService, Gson gson, AuthTokenService authTokenService) {
         this.userService = userService;
         this.gson = gson;
+        this.authTokenService = authTokenService;
     }
 
     @Override
@@ -38,7 +45,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(new BasicAuthenticationEntryPoint(this.gson))
                 .and();
 
+        final TokenBasicAuthenticationFilter basicAuthenticationFilter = new TokenBasicAuthenticationFilter(this.authenticationManagerBean(), this.authTokenService);
+        final TokenAuthenticationFilter tokenFilter = new TokenAuthenticationFilter(this.authTokenService);
 
+        http.addFilter(basicAuthenticationFilter);
+        http.addFilterBefore(tokenFilter, BasicAuthenticationFilter.class);
     }
 
     @Bean

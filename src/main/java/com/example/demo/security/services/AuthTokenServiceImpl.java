@@ -37,7 +37,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime lastAccessTime = token.getLastAccessTime();
 
-        return ChronoUnit.MINUTES.between(lastAccessTime, now) < AppConstants.MAX_USER_TOKEN_INACTIVITY_MIN;
+        return Math.abs(ChronoUnit.MINUTES.between(now, lastAccessTime)) < AppConstants.MAX_USER_TOKEN_INACTIVITY_MIN;
     }
 
     @Override

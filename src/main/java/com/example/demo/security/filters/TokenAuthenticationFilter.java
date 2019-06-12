@@ -29,7 +29,7 @@ public class TokenAuthenticationFilter implements Filter {
             AuthToken token = this.authTokenService.findById(accessToken);
 
             if (token != null) {
-                if (!this.authTokenService.isAuthTokenExpired(token)) {
+                if (this.authTokenService.isAuthTokenExpired(token)) {
                     this.authTokenService.remove(token);
                 } else {
                     final User user = token.getUser();

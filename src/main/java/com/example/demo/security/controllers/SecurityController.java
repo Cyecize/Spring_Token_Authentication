@@ -3,16 +3,15 @@ package com.example.demo.security.controllers;
 import com.example.demo.constants.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +65,13 @@ public class SecurityController {
     public Map<String, Object> adminAction() {
         return new HashMap<>() {{
             put(AppConstants.RESPONSE_BODY_MESSAGE_KEY, "You are admin!");
+        }};
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public Map<String, Object> accessDeniedHandlerAction(HttpServletResponse response) {
+        return new HashMap<>() {{
+            put(AppConstants.RESPONSE_BODY_MESSAGE_KEY, "You are not allowed to visit this page!");
         }};
     }
 }

@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,17 +55,17 @@ public class SecurityController {
 
     @GetMapping("/logged")
     @PreAuthorize("isFullyAuthenticated()")
-    public Map<String, Object> loggedAction() {
+    public Map<String, Object> loggedAction(Principal principal) {
         return new HashMap<>() {{
-            put(AppConstants.RESPONSE_BODY_MESSAGE_KEY, "You are logged!");
+            put(AppConstants.RESPONSE_BODY_MESSAGE_KEY, principal.getName() + ", you are logged!");
         }};
     }
 
     @GetMapping("/admin")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Map<String, Object> adminAction() {
+    public Map<String, Object> adminAction(Principal principal) {
         return new HashMap<>() {{
-            put(AppConstants.RESPONSE_BODY_MESSAGE_KEY, "You are admin!");
+            put(AppConstants.RESPONSE_BODY_MESSAGE_KEY, principal.getName() + ", you are admin!");
         }};
     }
 

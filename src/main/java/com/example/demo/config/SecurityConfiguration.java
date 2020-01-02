@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -43,7 +44,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .userDetailsService(this.userService)
                 .httpBasic()
                     .authenticationEntryPoint(new BasicAuthenticationEntryPoint(this.gson))
-                .and();
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         final TokenBasicAuthenticationFilter basicAuthenticationFilter = new TokenBasicAuthenticationFilter(this.authenticationManagerBean(), this.authTokenService);
         final TokenAuthenticationFilter tokenFilter = new TokenAuthenticationFilter(this.authTokenService);
